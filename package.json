@@ -10,6 +10,9 @@
   "author": "biggant2",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.6.4"
+    "@discordjs/opus": "^0.3.2",
+    "discord.js": "^12.2.0",
+    "text-to-mp3": "^1.0.4",
+    "ytdl-core": "^2.1.7"
   }
 }
