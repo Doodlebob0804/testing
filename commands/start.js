@@ -15,7 +15,7 @@ exports.run = async (client, message, args) => {
         }
 
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
-        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${text}`)
+        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${text}`)
         
         connection.play(out.body);
     }
