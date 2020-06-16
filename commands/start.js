@@ -9,6 +9,7 @@ exports.run = async (client, message, args) => {
     let callback = async (newMsg) => {
         if(newMsg.author !== message.author) return;
         if(newMsg.channel !== message.channel) return;
+        if(!newMsg.content) return;
         if(newMsg.content === "%end") {
             message.channel.send("Ended")
             return client.removeListener('message', callback);
@@ -21,6 +22,7 @@ exports.run = async (client, message, args) => {
     }
 
     client.on('message', callback)
+    message.channel.send('Started')
 }
 
 exports.help = {

@@ -3,3 +3,6 @@ node_modules/
 
 # Configuration files
 config.json
+
+# Databases
+prefix.db

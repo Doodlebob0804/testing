@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const fs = require('fs');
+const Keyv = require('keyv');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
+const keyv = new Keyv('sqlite://prefix.db')
 
 const { token, defaultPrefix } = require('./config.json')
 
@@ -17,14 +19,20 @@ for (file of commandFiles) {
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
+    client.user.setPresence({activity: { name: 'Ping me or type %help' }, status: 'online' })
 });
 
-client.on('message', (message) => {
+client.on('message', async (message) => {
     if(message.author.bot) return;
     if(message.channel.type === 'dm') return;
-    if(!message.content.startsWith(defaultPrefix)) return;
 
-    let args = message.content.slice(defaultPrefix.length).split(' ');
+    if(message.mentions.has(client.user)) return client.commands.get('help').run(client, message, undefined);
+
+    let prefix = await keyv.get(message.guild.id) || defaultPrefix;
+    if(message.content.startsWith(defaultPrefix)) prefix = defaultPrefix;
+    if(!message.content.startsWith(prefix)) return;
+
+    let args = message.content.slice(prefix.length).split(' ');
     let commandName = args.shift().toLowerCase();
     
     let command = client.commands.get(commandName)
