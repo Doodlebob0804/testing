@@ -12,6 +12,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.2.0",
-    "text-to-mp3": "^1.0.4"
+    "text-to-mp3": "^1.0.4",
+    "text2wav": "0.0.13"
   }
 }

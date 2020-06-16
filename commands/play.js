@@ -1,4 +1,4 @@
-var txt = require("text-to-mp3");
+const text2wav = require('text2wav')
 let { Duplex } = require('stream');
 
 exports.run = async (client, message, args) => {
@@ -6,7 +6,8 @@ exports.run = async (client, message, args) => {
     if(!vc) return message.channel.send('You must be in a voice channel to use this command.');
     
     let connection = await vc.join();
-    let buffer = await txt.getMp3(args.join(" "));
+    let out = await text2wav(args.join(" "))
+    let buffer = new Buffer.from(out);
     let stream = new Duplex();
     stream.push(buffer);
     stream.push(null);
