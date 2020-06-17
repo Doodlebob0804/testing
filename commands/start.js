@@ -10,7 +10,7 @@ exports.run = async (client, message, args) => {
     let connection = await vc.join();
     
     let filter = newMsg => newMsg.author.id === message.author.id && newMsg.channel.id === message.channel.id && newMsg.member.voice.channel === vc && newMsg.content;
-    let collector = message.channel.createMessageCollector(filter, { idle: 30000 });
+    let collector = message.channel.createMessageCollector(filter, { idle: 300000 });
     collector.on('collect', async newMsg => {
         if(newMsg.content === "%end") {
             collector.stop();
