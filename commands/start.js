@@ -11,6 +11,7 @@ exports.run = async (client, message, args) => {
     let callback = async (newMsg) => {
         if(newMsg.author !== message.author) return;
         if(newMsg.channel !== message.channel) return;
+        if(!newMsg.member.voice.channel) return;
         if(!newMsg.content) return;
         if(newMsg.content === "%end") {
             message.channel.send("Ended")
