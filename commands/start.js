@@ -18,6 +18,9 @@ exports.run = async (client, message, args) => {
         if(!newMsg.content) return;
         if(newMsg.content === "%end") {
             message.channel.send("Ended")
+            let user = client.currUsers.find(user => user.id === newMsg.member.id)
+            client.currUsers = client.currUsers.filter(users => users !== user);
+            client.removeListener('voiceStateUpdate', voiceChannelCallback)
             return client.removeListener('message', callback);
         }
 
