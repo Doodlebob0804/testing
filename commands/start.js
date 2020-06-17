@@ -22,7 +22,7 @@ exports.run = async (client, message, args) => {
         }
 
         clearTimeout(timeout);
-        timeout = setTimeout(end, 10000, client, callback, voiceCallback, timeout, message)
+        timeout = setTimeout(end, 300000, client, callback, voiceCallback, timeout, message)
 
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
         text = text.replace(/[%#]/g, '')
@@ -51,21 +51,23 @@ exports.run = async (client, message, args) => {
         }
     }
 
-    timeout = setTimeout(end, 10000, client, callback, voiceCallback, timeout, message)
+    timeout = setTimeout(end, 300000, client, callback, voiceCallback, timeout, message)
 
     client.on('message', callback)
     client.on('voiceStateUpdate', voiceCallback)
     message.channel.send('Started');
 }
 
-function end(client, callback, voiceCallback, timeout, message) {
+async function end(client, callback, voiceCallback, timeout, message) {
     client.removeListener('message', callback);
     client.removeListener('voiceStateUpdate', voiceCallback)
     clearTimeout(timeout);
     let user = client.currUsers.find(user => user.id === message.member.id)
     client.currUsers = client.currUsers.filter(users => users !== user);
-    message.member.voice.channel.leave();
-    return message.channel.send("Ended");
+    if(await message.guild.fetch()) {
+        message.member.voice.channel.leave();
+        return message.channel.send("Ended");
+    }
 }
 
 exports.help = {
