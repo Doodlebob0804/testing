@@ -4,6 +4,7 @@ const Keyv = require('keyv');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
+client.currUsers = [];
 const keyv = new Keyv('sqlite://prefix.db')
 
 const { token, defaultPrefix } = require('./config.json')

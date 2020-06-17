@@ -1,10 +1,12 @@
 const fetch = require('node-fetch')
-let currSeconds = 0;
-let timer;
 
 exports.run = async (client, message, args) => {
     let vc = message.member.voice.channel;
     if(!vc) return message.channel.send('You must be in a voice channel to use this command.');
+
+    if(client.currUsers.find(user => user.guild === message.guild.id && user.id !== message.author.id)) return message.channel.send('Someone is already using this bot in this server.')
+    if(client.currUsers.find(user => user.id === message.author.id)) return message.channel.send('You have already started this bot, please end the current instance before starting a new one.');
+    await client.currUsers.push({id: message.author.id, guild: message.guild.id});
     
     let connection = await vc.join();
 
@@ -12,6 +14,7 @@ exports.run = async (client, message, args) => {
         if(newMsg.author !== message.author) return;
         if(newMsg.channel !== message.channel) return;
         if(!newMsg.member.voice.channel) return;
+        if(newMsg.member.voice.channel !== vc) return;
         if(!newMsg.content) return;
         if(newMsg.content === "%end") {
             message.channel.send("Ended")
@@ -19,30 +22,25 @@ exports.run = async (client, message, args) => {
         }
 
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
+        text = text.replace(/[%#]/g, '')
         let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${text}`)
         
         connection.play(out.body);
     }
 
-    restartTimer(client, callback, message.channel)
+    let voiceChannelCallback = (oldState, newState) => {
+        if(!newState.channel && newState.member === message.member) {
+            message.channel.send("Ended");
+            let user = client.currUsers.find(user => user.id === newState.member.id)
+            client.currUsers = client.currUsers.filter(users => users !== user);
+            client.removeListener('voiceStateUpdate', voiceChannelCallback)
+            return client.removeListener('message', callback)
+        }
+    }
 
     client.on('message', callback)
+    client.on('voiceStateUpdate', voiceChannelCallback)
     message.channel.send('Started')
-}
-
-function startTimer(client, callback, channel) {
-    currSeconds++;
-    if(currSeconds > 240) {
-        clearInterval(timer);
-        channel.send("Timed out")
-        return client.removeListener('message', callback);
-    }
-}
-
-function restartTimer(client, callback, channel) {
-    clearInterval(timer);
-    currSeconds = 0;
-    timer = setInterval(startTimer, 1000, client, callback, channel);
 }
 
 exports.help = {
