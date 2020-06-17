@@ -27,8 +27,7 @@ client.on('message', async (message) => {
     if(message.author.bot) return;
     if(message.channel.type === 'dm') return;
 
-    let regex = new RegExp(`<@!?${client.user.id}>`, 'g')
-    if(message.content.match(regex)) return client.commands.get('help').run(client, message, undefined);
+    if(message.mentions.has(client.user.id, {'ignoreEveryone': true, 'ignoreRoles': true })) return client.commands.get('help').run(client, message, undefined);
 
     let prefix = await keyv.get(message.guild.id) || defaultPrefix;
     if(message.content.startsWith(defaultPrefix)) prefix = defaultPrefix;

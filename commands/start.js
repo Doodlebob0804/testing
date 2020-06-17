@@ -11,6 +11,7 @@ exports.run = async (client, message, args) => {
     
     let filter = newMsg => newMsg.author.id === message.author.id && newMsg.channel.id === message.channel.id && newMsg.member.voice.channel === vc && newMsg.content;
     let collector = message.channel.createMessageCollector(filter, { idle: 300000 });
+
     collector.on('collect', async newMsg => {
         if(newMsg.content === "%end") {
             collector.stop();
@@ -18,6 +19,7 @@ exports.run = async (client, message, args) => {
 
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
         text = text.replace(/[%#]/g, '')
+        text = text.replace(/<a?:.+?:[0-9]+>/g, match => match.slice(match.indexOf(':') + 1, match.lastIndexOf(':')));
         let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${text}`)
         
         connection.play(out.body);
