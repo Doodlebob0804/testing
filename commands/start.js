@@ -40,6 +40,13 @@ exports.run = async (client, message, args) => {
             client.currUsers = client.currUsers.filter(users => users !== user);
             oldState.channel.leave();
             return message.channel.send("Ended");
+        } else if(!newState.channel && newState.member.id === client.user.id){
+            client.removeListener('message', callback)
+            client.removeListener('voiceStateUpdate', voiceChannelCallback);
+            let user = client.currUsers.find(user => user.guild === oldState.guild.id)
+            client.currUsers = client.currUsers.filter(users => users !== user);
+            oldState.channel.leave();
+            return message.channel.send("Ended");
         }
     }
 
