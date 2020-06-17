@@ -26,7 +26,7 @@ exports.run = async (client, message, args) => {
 
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
         text = text.replace(/[%#]/g, '')
-        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${text}`)
+        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${text}`)
         
         connection.play(out.body);
     }
@@ -40,7 +40,8 @@ exports.run = async (client, message, args) => {
             client.currUsers = client.currUsers.filter(users => users !== user);
             oldState.channel.leave();
             return message.channel.send("Ended");
-        } else if(!newState.channel && newState.member.id === client.user.id){
+        } else if(!newState.channel && newState.member.id === client.user.id && newState.guild === message.guild){
+            console.log("audioRan")
             client.removeListener('message', callback)
             client.removeListener('voiceStateUpdate', voiceCallback);
             clearTimeout(timeout);
