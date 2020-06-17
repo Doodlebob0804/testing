@@ -20,8 +20,8 @@ exports.run = async (client, message, args) => {
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
         text = text.replace(/[%#]/g, '')
         text = text.replace(/&/g, 'and')
-        text = text.replace(/<a?:.+?:[0-9]+>/g, match => match.slice(match.indexOf(':') + 1, match.lastIndexOf(':')));
-        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${text}`)
+        text = text.replace(/(<a?:)(.+?)(:[0-9]+>)/g, `$2`)
+        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${text}`)
         
         connection.play(out.body);
     });
