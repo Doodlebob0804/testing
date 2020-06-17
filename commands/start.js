@@ -21,6 +21,7 @@ exports.run = async (client, message, args) => {
             let user = client.currUsers.find(user => user.id === newMsg.member.id)
             client.currUsers = client.currUsers.filter(users => users !== user);
             client.removeListener('voiceStateUpdate', voiceChannelCallback)
+            message.member.voice.channel.leave();
             return client.removeListener('message', callback);
         }
 
@@ -37,6 +38,7 @@ exports.run = async (client, message, args) => {
             let user = client.currUsers.find(user => user.id === newState.member.id)
             client.currUsers = client.currUsers.filter(users => users !== user);
             client.removeListener('voiceStateUpdate', voiceChannelCallback)
+            oldState.channel.leave();
             return client.removeListener('message', callback)
         }
     }
