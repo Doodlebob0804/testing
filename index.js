@@ -41,4 +41,14 @@ client.on('message', async (message) => {
     if(command) command.run(client, message, args)
 })
 
+client.on('voiceStateUpdate', (oldState, newState) => {
+    let user = client.currUsers.find(user => user.guild === oldState.guild.id);
+    if(!user) return;
+    if(!newState.channel && newState.id === user.id) {
+       return user.collector.stop();
+    } else if(!newState.channel && newState.member.id === client.user.id && newState.guild.id === user.guild) {
+        return user.collector.stop();
+    }
+})
+
 client.login(token);
