@@ -9,6 +9,7 @@ exports.run = async (client, message, args) => {
     await client.currUsers.push({id: message.author.id, guild: message.guild.id});
     
     let connection = await vc.join();
+    let timeout;
 
     let callback = async (newMsg) => {
         if(newMsg.author !== message.author) return;
@@ -17,11 +18,11 @@ exports.run = async (client, message, args) => {
         if(newMsg.member.voice.channel !== vc) return;
         if(!newMsg.content) return;
         if(newMsg.content === "%end") {
-            return end(client, callback, voiceCallback, message);
+            return end(client, callback, voiceCallback, timeout, message);
         }
 
         clearTimeout(timeout);
-        timeout = setTimeout(end, 240000, client, callback, voiceCallback, message)
+        timeout = setTimeout(end, 10000, client, callback, voiceCallback, timeout, message)
 
         let text = newMsg.content.replace(/[^\x00-\x7F]/g, '')
         text = text.replace(/[%#]/g, '')
@@ -33,7 +34,8 @@ exports.run = async (client, message, args) => {
     let voiceCallback = (oldState, newState) => {
         if(!newState.channel && newState.member === message.member) {
             client.removeListener('message', callback)
-            client.removeListener('voiceStateUpdate', voiceCallback)          
+            client.removeListener('voiceStateUpdate', voiceCallback)
+            clearTimeout(timeout);
             let user = client.currUsers.find(user => user.id === newState.member.id)
             client.currUsers = client.currUsers.filter(users => users !== user);
             oldState.channel.leave();
@@ -41,6 +43,7 @@ exports.run = async (client, message, args) => {
         } else if(!newState.channel && newState.member.id === client.user.id){
             client.removeListener('message', callback)
             client.removeListener('voiceStateUpdate', voiceCallback);
+            clearTimeout(timeout);
             let user = client.currUsers.find(user => user.guild === oldState.guild.id)
             client.currUsers = client.currUsers.filter(users => users !== user);
             oldState.channel.leave();
@@ -48,16 +51,17 @@ exports.run = async (client, message, args) => {
         }
     }
 
-    let timeout = setTimeout(end, 240000, client, callback, voiceCallback, message)
+    timeout = setTimeout(end, 10000, client, callback, voiceCallback, timeout, message)
 
     client.on('message', callback)
     client.on('voiceStateUpdate', voiceCallback)
     message.channel.send('Started');
 }
 
-function end(client, callback, voiceCallback, message) {
+function end(client, callback, voiceCallback, timeout, message) {
     client.removeListener('message', callback);
     client.removeListener('voiceStateUpdate', voiceCallback)
+    clearTimeout(timeout);
     let user = client.currUsers.find(user => user.id === message.member.id)
     client.currUsers = client.currUsers.filter(users => users !== user);
     message.member.voice.channel.leave();
