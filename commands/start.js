@@ -1,4 +1,8 @@
 const fetch = require('node-fetch')
+const Keyv = require('keyv');
+const config = require('../config.json')
+
+const keyv = new Keyv('sqlite://prefix.db')
 
 exports.run = async (client, message, args) => {
     let vc = message.member.voice.channel;
@@ -13,7 +17,8 @@ exports.run = async (client, message, args) => {
     let collector = message.channel.createMessageCollector(filter, { idle: 300000 });
 
     collector.on('collect', async newMsg => {
-        if(newMsg.content === "%end") {
+        let prefix = await keyv.get(message.guild.id) || config.defaultPrefix;
+        if(newMsg.content === `${prefix}end`) {
             collector.stop();
         }
 

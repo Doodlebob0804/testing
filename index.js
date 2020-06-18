@@ -27,9 +27,14 @@ client.on('message', async (message) => {
     if(message.author.bot) return;
     if(message.channel.type === 'dm') return;
 
-    if(message.mentions.has(client.user.id, {'ignoreEveryone': true, 'ignoreRoles': true })) return client.commands.get('help').run(client, message, undefined);
-
     let prefix = await keyv.get(message.guild.id) || defaultPrefix;
+    let mentionRegex = /^<@!?[0-9]+?>/g;
+
+    if(mentionRegex.test(message.content)) {
+        prefix = message.content.match(mentionRegex)[0];
+        let cmd = message.content.replace(prefix, '');
+        if(cmd === '' || cmd === ' ') return client.commands.get('help').run(client, message, undefined);
+    }
     if(!message.content.startsWith(prefix)) return;
 
     let args = message.content.slice(prefix.length).split(' ');
