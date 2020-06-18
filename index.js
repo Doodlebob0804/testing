@@ -30,7 +30,6 @@ client.on('message', async (message) => {
     if(message.mentions.has(client.user.id, {'ignoreEveryone': true, 'ignoreRoles': true })) return client.commands.get('help').run(client, message, undefined);
 
     let prefix = await keyv.get(message.guild.id) || defaultPrefix;
-    if(message.content.startsWith(defaultPrefix)) prefix = defaultPrefix;
     if(!message.content.startsWith(prefix)) return;
 
     let args = message.content.slice(prefix.length).split(' ');
