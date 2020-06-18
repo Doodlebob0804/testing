@@ -12,12 +12,12 @@ exports.run = async (client, message, args) => {
     if(client.currUsers.find(user => user.id === message.author.id)) return message.channel.send('You have already started this bot, please end the current instance before starting a new one.');
     
     let connection = await vc.join();
+    let prefix = await keyv.get(message.guild.id) || config.defaultPrefix;
     
     let filter = newMsg => newMsg.author.id === message.author.id && newMsg.channel.id === message.channel.id && newMsg.member.voice.channel === vc && newMsg.content;
     let collector = message.channel.createMessageCollector(filter, { idle: 300000 });
 
     collector.on('collect', async newMsg => {
-        let prefix = await keyv.get(message.guild.id) || config.defaultPrefix;
         if(newMsg.content === `${prefix}end`) {
             collector.stop();
         }
