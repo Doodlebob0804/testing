@@ -28,7 +28,7 @@ client.on('message', async (message) => {
     if(message.channel.type === 'dm') return;
 
     let prefix = await keyv.get(message.guild.id) || defaultPrefix;
-    let mentionRegex = /^<@!?[0-9]+?>/g;
+    let mentionRegex = new RegExp(`^<@!?${client.user.id}>`, 'g')
 
     if(mentionRegex.test(message.content)) {
         prefix = message.content.match(mentionRegex)[0];
