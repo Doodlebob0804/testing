@@ -11,6 +11,8 @@ exports.run = async (client, message, args) => {
     if(client.currUsers.find(user => user.guild === message.guild.id && user.id !== message.author.id)) return message.channel.send('Someone is already using this bot in this server.')
     if(client.currUsers.find(user => user.id === message.author.id)) return message.channel.send('You have already started this bot, please end the current instance before starting a new one.');
     
+    await client.currUsers.push({id: message.author.id, guild: message.guild.id, collector: null});
+
     let connection = await vc.join();
     let prefix = await keyv.get(message.guild.id) || config.defaultPrefix;
     
@@ -41,7 +43,8 @@ exports.run = async (client, message, args) => {
         }
     })
 
-    await client.currUsers.push({id: message.author.id, guild: message.guild.id, collector: collector});
+    let index = client.currUsers.findIndex(obj => obj.id === message.author.id && obj.guild === message.guild.id);
+    client.currUsers[index].collector = collector;
 
     message.channel.send('Started');
 }
