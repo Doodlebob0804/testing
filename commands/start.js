@@ -44,10 +44,12 @@ exports.run = async (client, message, args) => {
     collector.on('end', async () => {
         let user = client.currUsers.find(user => user.id === message.member.id)
         client.currUsers = client.currUsers.filter(users => users !== user);
-        if(await message.guild.fetch()) {
+        try {
             let vc = message.member.voice.channel || client.voice.connections.find(connection => connection.channel.guild.id === user.guild).channel;
             vc.leave();
             return message.channel.send("Ended");
+        } catch(e) {
+            console.log(e);
         }
     })
 
