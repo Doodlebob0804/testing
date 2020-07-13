@@ -1,7 +1,7 @@
-const { BotOwners } = require('../config.json')
+const { botOwners } = require('../config.json')
 
 exports.run = (client, message, args) => {
-    if(message.author.id !== BotOwners[0]) return;
+    if(!botOwners.includes(message.author.id)) return;
     try {
         const code = args.join(" ");
         let evaled = eval(code);
@@ -9,9 +9,9 @@ exports.run = (client, message, args) => {
         if (typeof evaled !== "string")
             evaled = require("util").inspect(evaled);
 
-        message.channel.send(clean(evaled), {code:"xl"});
+        message.channel.send(clean(evaled), {code:"xl", split: true});
     } catch (err) {
-        message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+        message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``, {split: true});
     }
 }
 

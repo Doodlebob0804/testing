@@ -13,7 +13,15 @@ exports.run = async (client, message, args) => {
     
     await client.currUsers.push({id: message.author.id, guild: message.guild.id, collector: null});
 
-    let connection = await vc.join();
+    let connection;
+    try {
+        connection = await vc.join();
+    } catch(error) {
+        let user = client.currUsers.find(user => user.id === message.member.id)
+        client.currUsers = client.currUsers.filter(users => users !== user);
+        return;
+    }
+    
     let prefix = await keyv.get(message.guild.id) || config.defaultPrefix;
     
     let filter = newMsg => newMsg.author.id === message.author.id && newMsg.channel.id === message.channel.id && newMsg.member.voice.channel === vc && newMsg.content;

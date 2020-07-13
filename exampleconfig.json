@@ -1,5 +1,5 @@
 {
     "token": "tokenhere",
     "defaultPrefix": "%",
-    "BotOwners": ["id1", "id2"]
+    "botOwners": ["id1", "id2"]
 }
