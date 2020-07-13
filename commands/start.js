@@ -36,7 +36,7 @@ exports.run = async (client, message, args) => {
         text = text.replace(/[%#]/g, '')
         text = text.replace(/&/g, 'and')
         text = text.replace(/(<a?:)(.+?)(:[0-9]+>)/g, `$2`)
-        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${text}`)
+        let out = await fetch(`https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=${text}`)
         
         connection.play(out.body);
     });
