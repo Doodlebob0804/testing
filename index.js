@@ -1,9 +1,12 @@
-const Discord = require('discord.js');
+const { Client, Intents, Collection} = require('discord.js');
 const fs = require('fs');
 const Keyv = require('keyv');
 
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
+const mIntents = new Intents(Intents.NON_PRIVILEGED);
+mIntents.remove(['GUILD_MESSAGE_TYPING', 'DIRECT_MESSAGE_TYPING'])
+
+const client = new Client({ ws: { intents: mIntents}});
+client.commands = new Collection();
 client.currUsers = [];
 const keyv = new Keyv('sqlite://prefix.db')
 
