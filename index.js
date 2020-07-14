@@ -44,7 +44,12 @@ client.on('message', async (message) => {
     let commandName = args.shift().toLowerCase();
     
     let command = client.commands.get(commandName)
-    if(command) command.run(client, message, args)
+    try {
+        if(command) command.run(client, message, args)
+    } catch(e) {
+        console.log(e)
+    }
+    
 })
 
 client.on('voiceStateUpdate', (oldState, newState) => {
