@@ -47,10 +47,10 @@ exports.run = async (client, message, args) => {
         try {
             let vc = message.member.voice.channel || client.voice.connections.find(connection => connection.channel.guild.id === user.guild).channel;
             vc.leave();
-            return message.channel.send("Ended");
         } catch(e) {
             console.log(e);
         }
+        return message.channel.send("Ended");
     })
 
     let index = client.currUsers.findIndex(obj => obj.id === message.author.id && obj.guild === message.guild.id);
